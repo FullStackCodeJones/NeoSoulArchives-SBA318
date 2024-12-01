@@ -1,0 +1,61 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-image: url("/images/NeoSoulBackground.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: #f5f5f5;
+  color: teal;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px black;
+
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  text-align: center;
+  font-size: 40px;
+  color: rgb(209, 178, 2);
+  text-shadow: 3px 3px 5px black;
+}
+
+h1 {
+  text-align: center;
+  font-size: 70px;
+  color: teal;
+}
+
+a {
+  text-align: center;
+  color: gold;
+  font-weight: bold;
+  text-shadow: 1px 1px 2 px black;
+}
+
+form {
+  text-align: center;
+  margin: 20px;
+}
+
+input {
+  padding: 8px;
+  margin: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: teal;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}

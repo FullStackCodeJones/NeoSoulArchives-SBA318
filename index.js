@@ -1,35 +1,40 @@
-//Import Required Modules
 const express = require("express");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const path = require("path");
+const artistsRouter = require("./routes/artists"); // Import Artists Router
 
-//Sets Up Express App
 const app = express();
 
-//Middleware
-//Parse URL encoded data from forms
+// Middleware Setup
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride("_method")); // Handle PUT/DELETE requests
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files
 
-//Uses method override to handle the PUT/DELETE requests
-app.use(methodOverride("_method"));
-
-//Static Files
-//Serves the static files like CSS, and Images
-app.use(express.static(path.join(__dirname, "public")));
-
-//Setting up EJS as the template engine for dynamic HTML rendering
+// View engine setup
 app.set("view engine", "ejs");
 
-//Routes
-
-//Home Route: Displays a Welcome Page
+// Routes
 app.get("/", (req, res) => {
   res.render("index", { title: "Neo-Soul & Spoken Word Archive" });
 });
 
-//Start The Server On Port 3000
-const PORT = 3000; //Defines The Port Number
+app.get("/artists", (req, res) => {
+  fetch("http://localhost:3000/api/artists")
+    .then((response) => response.json())
+    .then((artists) => {
+      res.render("artists", { artists });
+    });
+});
+
+app.get("/artists/new", (req, res) => {
+  res.render("addArtist");
+});
+
+// Use the artists router for all artist-related API routes
+app.use("/api/artists", artistsRouter);
+
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server is Running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
