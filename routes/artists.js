@@ -42,70 +42,60 @@ let artists = [
     popularSong: "Love",
   },
 ];
-
-// GET Route: Fetch Artists (with optional filtering by genre)
+// GET: Fetch all artists (with optional genre filter)
 router.get("/", (req, res) => {
-  const { genre } = req.query; // Capture genre filter from query parameters
-
-  // If the genre is provided in the query string, filter the artists by genre
+  const { genre } = req.query;
   const filteredArtists = genre
     ? artists.filter(
         (artist) => artist.genre.toLowerCase() === genre.toLowerCase()
-      ) // Case insensitive genre filtering
-    : artists; // If no genre is provided, return all artists
-
-  res.json(filteredArtists);
+      )
+    : artists;
+  res.render("artists", { artists: filteredArtists });
 });
 
-// POST Route: Add New Artist
+// POST: Add a new artist
 router.post("/", (req, res) => {
-  const newArtist = {
-    id: artists.length + 1, // Assigns A New ID
-    name: req.body.name,
-    genre: req.body.genre,
-    bio: req.body.bio,
-    popularSong: req.body.popularSong,
-  };
+  const { name, genre, bio, popularSong } = req.body;
+  if (!name || !genre || !bio || !popularSong) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
 
+  const newArtist = { id: artists.length + 1, name, genre, bio, popularSong };
   artists.push(newArtist);
-  res.status(201).json(newArtist);
+  res.redirect("/artists");
 });
 
-// PUT Route: Update Artist
+// PUT: Update an artist
 router.put("/:id", (req, res) => {
   const artistId = parseInt(req.params.id);
   const artist = artists.find((a) => a.id === artistId);
 
-  if (!req.body.name || !req.body.genre || !req.body.bio) {
-    return res.status(400).json({ message: "Missing Required Fields" });
-  }
+  if (!artist) return res.status(404).json({ message: "Artist not found." });
 
-  // Update the artist details with the new values from the request body
-  artist.name = req.body.name || artist.name;
-  artist.genre = req.body.genre || artist.genre;
-  artist.bio = req.body.bio || artist.bio;
-  artist.popularSong = req.body.popularSong || artist.popularSong;
+  const { name, genre, bio, popularSong } = req.body;
+  if (!name || !genre || !bio)
+    return res
+      .status(400)
+      .json({ message: "Name, genre, and bio are required." });
 
-  res.json(artist);
+  artist.name = name || artist.name;
+  artist.genre = genre || artist.genre;
+  artist.bio = bio || artist.bio;
+  artist.popularSong = popularSong || artist.popularSong;
+
+  res.redirect("/artists");
 });
 
-// DELETE Route: Remove Artist
+// DELETE: Remove an artist
 router.delete("/:id", (req, res) => {
-  const artistId = parseInt(req.params.id); // Gets ID from the URL
+  const artistId = parseInt(req.params.id);
   const artistIndex = artists.findIndex((a) => a.id === artistId);
 
-  if (artistIndex === -1) {
-    return res.status(404).json({ message: "Artist Not Found" });
-  }
+  if (artistIndex === -1)
+    return res.status(404).json({ message: "Artist not found." });
 
-  const deletedArtist = artists.splice(artistIndex, 1); // Removes an Artist from the Array
-  res.json(deletedArtist);
+  artists.splice(artistIndex, 1);
+  res.redirect("/artists");
 });
 
-// Route for /performances
-router.get("/performances", (req, res) => {
-  res.send("Performance Page");
-});
-
-// Export the Router so that it can be used in index.js
 module.exports = router;
